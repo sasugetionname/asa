@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>動く画像クリックゲーム</title>
+<style>
+  .container {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+  }
+  img {
+    position: absolute;
+    width: 100px; /* 画像のサイズは適宜調整してください */
+  }
+  #score {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="imageContainer">
+  <img src="file:///home/chronos/u-504d912384026ec5fc7500864386a1af31eca256/MyFiles/Downloads/sb3/th.jpeg" alt="クリック対象の画像" id="clickableImage">
+</div>
+<div id="score">ポイント: 0</div>
+
+<audio id="soundEffect" src="file:///home/chronos/u-504d912384026ec5fc7500864386a1af31eca256/MyFiles/Downloads/sb3/%E6%AD%A3%E8%A7%A3.mp3"></audio> <!-- 正しいクリック音声ファイルのパスを設定してください -->
+<audio id="missSoundEffect" src="file:///home/chronos/u-504d912384026ec5fc7500864386a1af31eca256/MyFiles/Downloads/sb3/8bit6_3.mp3"></audio> <!-- ミス時の音声ファイルのパスを設定してください -->
+<audio id="gameOverSoundEffect" src="file:///home/chronos/u-504d912384026ec5fc7500864386a1af31eca256/MyFiles/Downloads/sb3/Happy%20Happy%20Happy%20Cat%20Meme%20Green%20Screen%20%E7%8C%AB%E3%83%9F%E3%83%BC%E3%83%A0%E7%B4%A0%E6%9D%90%20cat%20meme.mp3"></audio> <!-- ゲームクリア時の音声ファイルのパスを設定してください -->
+
+<script>
+  var score = 0;
+
+  function moveImage() {
+    var img = document.getElementById('clickableImage');
+    var container = document.getElementById('imageContainer');
+    
+    var maxX = container.clientWidth - img.width;
+    var maxY = container.clientHeight - img.height;
+
+    var randomX = Math.floor(Math.random() * maxX);
+    var randomY = Math.floor(Math.random() * maxY);
+
+    img.style.left = randomX + "px";
+    img.style.top = randomY + "px";
+  }
+
+  function playSound() {
+    var sound = document.getElementById('soundEffect');
+    sound.play();
+  }
+
+  function playMissSound() {
+    var missSound = document.getElementById('missSoundEffect');
+    missSound.play();
+  }
+
+  function playGameOverSound() {
+    var gameOverSound = document.getElementById('gameOverSoundEffect');
+    gameOverSound.play();
+  }
+
+  function updateScore() {
+    score++;
+    document.getElementById('score').textContent = "ポイント: " + score;
+    if (score >= 10) {
+      playGameOverSound();
+      alert('ゲームクリア！');
+      score = 0; // スコアをリセット
+    }
+  }
+
+  document.getElementById('clickableImage').onclick = function(event) {
+    event.stopPropagation(); // コンテナのクリックイベントを防ぐ
+    playSound();
+    updateScore();
+  };
+
+  document.getElementById('imageContainer').onclick = function() {
+    playMissSound();
+  };
+
+  // 画像を500ミリ秒ごとに動かす
+  setInterval(moveImage, 500);
+
+  // 初期位置をランダムに設定
+  moveImage();
+</script>
+
+</body>
+</html>
